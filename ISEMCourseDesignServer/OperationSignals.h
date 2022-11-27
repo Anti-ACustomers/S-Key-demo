@@ -1,0 +1,15 @@
+#pragma once
+
+#define C_REGISTER 1001
+#define C_LOGIN 1002
+#define C_RESET_PASSWORD 1003
+#define C_LOGOUT 1004
+#define C_UNFREEZE 1005
+
+#define S_ACCESS 2001
+#define S_LOGIN_FAILED 2002
+#define S_WAIT_RETRY 2003
+#define S_FROZEN 2004
+
+#define SERVER_IP_ADDRESS "172.23.42.80"
+#define SERVER_PORT 10086
