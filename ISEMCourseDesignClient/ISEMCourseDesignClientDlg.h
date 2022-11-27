@@ -5,6 +5,7 @@
 #pragma once
 #include "ClientSocket.h"
 
+
 // CISEMCourseDesignClientDlg 对话框
 class CISEMCourseDesignClientDlg : public CDialogEx
 {
@@ -35,4 +36,8 @@ protected:
 
 public:
 	ClientSocket cSocket;
+	CTabCtrl selectCard;
+	afx_msg void OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pResult);
+	CButton btn1;
+	CButton btn2;
 };

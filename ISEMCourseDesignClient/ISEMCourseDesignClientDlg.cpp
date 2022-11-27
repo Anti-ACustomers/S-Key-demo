@@ -59,12 +59,16 @@ CISEMCourseDesignClientDlg::CISEMCourseDesignClientDlg(CWnd* pParent /*=nullptr*
 void CISEMCourseDesignClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_TAB3, selectCard);
+	DDX_Control(pDX, IDC_BUTTON1, btn1);
+	DDX_Control(pDX, IDC_BUTTON2, btn2);
 }
 
 BEGIN_MESSAGE_MAP(CISEMCourseDesignClientDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB3, &CISEMCourseDesignClientDlg::OnTcnSelchangeTab3)
 END_MESSAGE_MAP()
 
 
@@ -106,6 +110,10 @@ BOOL CISEMCourseDesignClientDlg::OnInitDialog()
 		MessageBox("无法连接到服务器！");
 		OnCancel();
 	}
+	selectCard.InsertItem(0, "tab1");
+	selectCard.InsertItem(1, "tab2");
+
+	btn2.ShowWindow(SW_HIDE);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -166,4 +174,24 @@ void CISEMCourseDesignClientDlg::OnOK()
 	// TODO: 在此添加专用代码和/或调用基类
 
 	//CDialogEx::OnOK();
+}
+
+
+void CISEMCourseDesignClientDlg::OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int select = selectCard.GetCurSel();
+	switch (select) {
+	case 0: {
+		btn1.ShowWindow(SW_SHOW);
+		btn2.ShowWindow(SW_HIDE);
+		break;
+	}
+	case 1: {
+		btn1.ShowWindow(SW_HIDE);
+		btn2.ShowWindow(SW_SHOW);
+		break;
+	}
+	}
+	*pResult = 0;
 }
