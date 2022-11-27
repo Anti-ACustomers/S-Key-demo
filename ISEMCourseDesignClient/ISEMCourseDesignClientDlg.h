@@ -5,6 +5,7 @@
 #pragma once
 #include "ClientSocket.h"
 
+
 // CISEMCourseDesignClientDlg 对话框
 class CISEMCourseDesignClientDlg : public CDialogEx
 {

@@ -11,6 +11,7 @@
 #pragma comment(lib, "libssl.lib")
 #pragma comment(lib, "libmysql.lib")
 
+
 #define BUFFERLEN 1024 //数据缓冲区大小 
 
 char sendBuf[BUFFERLEN];//用户发送缓冲区
@@ -50,7 +51,7 @@ void handleWrite(int i) {
 	sprintf(sendBuf, "I am a server!!!");
 	sendlen = send(fdSocket.fd_array[i], sendBuf, strlen(sendBuf) + 1, 0);
 	if (SOCKET_ERROR == sendlen)// 连接关闭
-	{
+{
 		printf("发送数据错误.\n");
 	}
 	else {
@@ -156,7 +157,7 @@ void main() {
 			if (FD_ISSET(fdSocket.fd_array[i], &fdRead)) {
 				handleRead(i);
 			} //判断套接字在读集合，处理接收过程
-		}
+}
 		//for end 
 		Sleep(2000);
 
