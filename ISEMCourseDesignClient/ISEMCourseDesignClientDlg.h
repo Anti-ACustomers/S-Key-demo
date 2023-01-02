@@ -37,7 +37,16 @@ protected:
 public:
 	ClientSocket cSocket;
 	CTabCtrl selectCard;
+	CButton btnUserLogin;
+	CButton btnAdminLogin;
+	CString ID;
+	CString password;
+	CButton btnRegister;
+
 	afx_msg void OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pResult);
-	CButton btn1;
-	CButton btn2;
+	afx_msg void OnBnClickedButtonRegister();
+	afx_msg void OnBnClickedButtonUserLogin();
+	afx_msg void OnClose();
+	CString confPasswd;
+	CString userName;
 };
