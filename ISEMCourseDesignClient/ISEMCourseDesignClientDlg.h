@@ -34,14 +34,17 @@ protected:
 	DECLARE_MESSAGE_MAP()
 		virtual void OnOK();
 
+private:
+	ClientSocket* cSocket;
+
 public:
-	ClientSocket cSocket;
 	CTabCtrl selectCard;
 	CButton btnUserLogin;
 	CButton btnAdminLogin;
 	CString ID;
 	CString password;
 	CButton btnRegister;
+	ClientSocket* GetSocket();
 
 	afx_msg void OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBnClickedButtonRegister();

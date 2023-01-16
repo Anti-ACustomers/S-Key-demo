@@ -39,6 +39,9 @@
     <ClInclude Include="ClientSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ISEMCourseDesignClientUserDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ISEMCourseDesignClient.cpp">
@@ -51,6 +54,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ClientSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ISEMCourseDesignClientUserDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

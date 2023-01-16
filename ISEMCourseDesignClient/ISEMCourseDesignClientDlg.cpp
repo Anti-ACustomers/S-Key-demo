@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "ISEMCourseDesignClient.h"
 #include "ISEMCourseDesignClientDlg.h"
+#include "ISEMCourseDesignClientUserDlg.h"
 #include "afxdialogex.h"
 #include <openssl/md5.h>
 #include <sstream>
@@ -113,6 +114,7 @@ CISEMCourseDesignClientDlg::CISEMCourseDesignClientDlg(CWnd* pParent /*=nullptr*
 	, password(_T(""))
 	, confPasswd(_T(""))
 	, userName(_T(""))
+	, cSocket(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -173,10 +175,13 @@ BOOL CISEMCourseDesignClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	cSocket.Create();
-	int ret = cSocket.Connect("127.0.0.1", SERVER_PORT);
+	cSocket = new ClientSocket;
+
+	cSocket->Create();
+	int ret = cSocket->Connect("127.0.0.1", SERVER_PORT);
 	if (!ret) {
 		MessageBox("无法连接到服务器！");
+		cSocket = NULL;
 		OnCancel();
 	}
 	selectCard.InsertItem(0, "用户");
@@ -329,14 +334,14 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 		root["data"] = data;
 
 		json.Append(serialize(root).c_str());
-		cSocket.Send(json, json.GetLength());
+		cSocket->Send(json, json.GetLength());
 
 		//使用后清空，预备下次使用
 		root.clear();
 		data.clear();
 		json.Empty();
 
-		ret = cSocket.Receive(recvBuff, 2048);
+		ret = cSocket->Receive(recvBuff, 2048);
 		if (ret <= 0) {
 			MessageBox("连接出错");
 		}
@@ -380,14 +385,14 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 		}
 
 		json.Append(serialize(root).c_str());
-		cSocket.Send(json, json.GetLength());
+		cSocket->Send(json, json.GetLength());
 
 		//使用后清空，预备下次使用
 		root.clear();
 		data.clear();
 		json.Empty();
 
-		ret = cSocket.Receive(recvBuff, 2048);
+		ret = cSocket->Receive(recvBuff, 2048);
 		if (ret <= 0) {
 			MessageBox("连接出错");
 		}
@@ -403,7 +408,12 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 		else {
 			//TODO 登陆成功后的处理
 			std::string userName(data.at("userName").as_string().c_str());
-			MessageBox(userName.c_str());
+			//MessageBox(userName.c_str());
+
+			ISEMCourseDesignClientUserDlg *dlg = new ISEMCourseDesignClientUserDlg;
+			dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, this);
+			dlg->ShowWindow(SW_SHOW);
+			this->ShowWindow(SW_HIDE);
 		}
 
 		/*重构前
@@ -492,8 +502,9 @@ void CISEMCourseDesignClientDlg::OnClose()
 	root["data"] = data;
 	CString json;
 	json.Append(serialize(root).c_str());
-	cSocket.Send(json, json.GetLength());
-	cSocket.Close();
+	cSocket->Send(json, json.GetLength());
+	cSocket->Close();
+	cSocket = NULL;
 
 	CDialogEx::OnClose();
 }
@@ -527,14 +538,14 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 		root["data"] = data;
 
 		json.Append(serialize(root).c_str());
-		cSocket.Send(json, json.GetLength());
+		cSocket->Send(json, json.GetLength());
 
 		//使用后清空，预备下次使用
 		root.clear();
 		data.clear();
 		json.Empty();
 
-		ret = cSocket.Receive(recvBuff, 2048);
+		ret = cSocket->Receive(recvBuff, 2048);
 		if (ret <= 0) {
 			MessageBox("连接出错");
 		}
@@ -559,12 +570,12 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 			root["iterate"] = iterate;
 			root["name"] = userName.GetString();
 			json.Append(serialize(root).c_str());
-			cSocket.Send(json, json.GetLength());
+			cSocket->Send(json, json.GetLength());
 
 			root.clear();
 			json.Empty();
 
-			ret = cSocket.Receive(recvBuff, 2048);
+			ret = cSocket->Receive(recvBuff, 2048);
 			if (ret <= 0) {
 				MessageBox("连接出错");
 			}
@@ -582,4 +593,10 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 	else {
 		MessageBox("请输入账号和密码");
 	}
+}
+
+
+ClientSocket* CISEMCourseDesignClientDlg::GetSocket()
+{
+	return cSocket;
 }
