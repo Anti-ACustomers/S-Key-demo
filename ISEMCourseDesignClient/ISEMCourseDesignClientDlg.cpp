@@ -411,6 +411,7 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 			//MessageBox(userName.c_str());
 
 			ISEMCourseDesignClientUserDlg *dlg = new ISEMCourseDesignClientUserDlg;
+			dlg->SetSocket(cSocket);
 			dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, this);
 			dlg->ShowWindow(SW_SHOW);
 			this->ShowWindow(SW_HIDE);
@@ -593,10 +594,4 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 	else {
 		MessageBox("请输入账号和密码");
 	}
-}
-
-
-ClientSocket* CISEMCourseDesignClientDlg::GetSocket()
-{
-	return cSocket;
 }
