@@ -5,9 +5,10 @@
 #define C_RESET_PASSWORD 1003
 #define C_LOGOUT 1004
 #define C_UNFREEZE 1005
+#define C_ADMIN_LOGIN 1006
 
 #define S_ACCESS 2001
-#define S_LOGIN_FAILED 2002
+#define S_FAILED 2002
 #define S_WAIT_RETRY 2003
 #define S_FROZEN 2004
 #define S_NEXTSTEP 2005

@@ -27,4 +27,8 @@ public:
 
 private:
 	ClientSocket* cSocket;
+	virtual void OnOK();
+public:
+	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedButtonBack();
 };

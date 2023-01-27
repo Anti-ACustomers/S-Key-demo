@@ -49,4 +49,8 @@ public:
 	afx_msg void OnClose();
 	CString confPasswd;
 	CString userName;
+	afx_msg void OnBnClickedButtonAdminLogin();
+	CButton btnResetPassword;
+	CButton btnUnfreeze;
+	afx_msg void OnBnClickedButtonRequestReset();
 };

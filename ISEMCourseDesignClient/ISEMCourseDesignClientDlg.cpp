@@ -130,6 +130,8 @@ void CISEMCourseDesignClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_REGISTER, btnRegister);
 	DDX_Text(pDX, IDC_EDIT_CONFIRM_PASSWORD, confPasswd);
 	DDX_Text(pDX, IDC_EDIT_USER_NAME, userName);
+	DDX_Control(pDX, IDC_BUTTON_REQUEST_RESET, btnResetPassword);
+	DDX_Control(pDX, IDC_BUTTON_REQUEST_UNFREEZE, btnUnfreeze);
 }
 
 BEGIN_MESSAGE_MAP(CISEMCourseDesignClientDlg, CDialogEx)
@@ -140,6 +142,8 @@ BEGIN_MESSAGE_MAP(CISEMCourseDesignClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_USER_LOGIN, &CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin)
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BUTTON_REGISTER, &CISEMCourseDesignClientDlg::OnBnClickedButtonRegister)
+	ON_BN_CLICKED(IDC_BUTTON_ADMIN_LOGIN, &CISEMCourseDesignClientDlg::OnBnClickedButtonAdminLogin)
+	ON_BN_CLICKED(IDC_BUTTON_REQUEST_RESET, &CISEMCourseDesignClientDlg::OnBnClickedButtonRequestReset)
 END_MESSAGE_MAP()
 
 
@@ -187,9 +191,13 @@ BOOL CISEMCourseDesignClientDlg::OnInitDialog()
 	selectCard.InsertItem(0, "用户");
 	selectCard.InsertItem(1, "管理员");
 	selectCard.InsertItem(2, "新用户注册");
+	selectCard.InsertItem(3, "忘记密码");
+	selectCard.InsertItem(4, "账户解冻");
 
 	btnAdminLogin.ShowWindow(SW_HIDE);
 	btnRegister.ShowWindow(SW_HIDE);
+	btnResetPassword.ShowWindow(SW_HIDE);
+	btnUnfreeze.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_EDIT_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_STATIC_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_EDIT_USER_NAME)->ShowWindow(SW_HIDE);
@@ -266,10 +274,14 @@ void CISEMCourseDesignClientDlg::OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pRes
 		btnUserLogin.ShowWindow(SW_SHOW);
 		btnAdminLogin.ShowWindow(SW_HIDE);
 		btnRegister.ShowWindow(SW_HIDE);
+		btnResetPassword.ShowWindow(SW_HIDE);
+		btnUnfreeze.ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_EDIT_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_EDIT_USER_NAME)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC_USER_NAME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PASSWORD)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_PASSWORD)->ShowWindow(SW_SHOW);
 		ID.Empty();
 		password.Empty();
 		confPasswd.Empty();
@@ -281,10 +293,14 @@ void CISEMCourseDesignClientDlg::OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pRes
 		btnUserLogin.ShowWindow(SW_HIDE);
 		btnAdminLogin.ShowWindow(SW_SHOW);
 		btnRegister.ShowWindow(SW_HIDE);
+		btnResetPassword.ShowWindow(SW_HIDE);
+		btnUnfreeze.ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_EDIT_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_EDIT_USER_NAME)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC_USER_NAME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PASSWORD)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_PASSWORD)->ShowWindow(SW_SHOW);
 		ID.Empty();
 		password.Empty();
 		confPasswd.Empty();
@@ -296,10 +312,52 @@ void CISEMCourseDesignClientDlg::OnTcnSelchangeTab3(NMHDR* pNMHDR, LRESULT* pRes
 		btnUserLogin.ShowWindow(SW_HIDE);
 		btnAdminLogin.ShowWindow(SW_HIDE);
 		btnRegister.ShowWindow(SW_SHOW);
+		btnResetPassword.ShowWindow(SW_HIDE);
+		btnUnfreeze.ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_EDIT_CONFIRM_PASSWORD)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_STATIC_CONFIRM_PASSWORD)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_EDIT_USER_NAME)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_STATIC_USER_NAME)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_PASSWORD)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_PASSWORD)->ShowWindow(SW_SHOW);
+		ID.Empty();
+		password.Empty();
+		confPasswd.Empty();
+		userName.Empty();
+		UpdateData(FALSE);
+		break;
+	}
+	case 3: {
+		btnUserLogin.ShowWindow(SW_HIDE);
+		btnAdminLogin.ShowWindow(SW_HIDE);
+		btnRegister.ShowWindow(SW_HIDE);
+		btnResetPassword.ShowWindow(SW_SHOW);
+		btnUnfreeze.ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_USER_NAME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_USER_NAME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PASSWORD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_PASSWORD)->ShowWindow(SW_HIDE);
+		ID.Empty();
+		password.Empty();
+		confPasswd.Empty();
+		userName.Empty();
+		UpdateData(FALSE);
+		break;
+	}
+	case 4: {
+		btnUserLogin.ShowWindow(SW_HIDE);
+		btnAdminLogin.ShowWindow(SW_HIDE);
+		btnRegister.ShowWindow(SW_HIDE);
+		btnResetPassword.ShowWindow(SW_HIDE);
+		btnUnfreeze.ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_CONFIRM_PASSWORD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_USER_NAME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_USER_NAME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PASSWORD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_PASSWORD)->ShowWindow(SW_HIDE);
 		ID.Empty();
 		password.Empty();
 		confPasswd.Empty();
@@ -350,7 +408,7 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 		//对接受的内容进行处理
 		root = parse(recvBuff).as_object();
 		data = root.at("data").as_object();
-		if (root.at("operate").as_int64() == S_LOGIN_FAILED) {
+		if (root.at("operate").as_int64() == S_FAILED) {
 			MessageBox("账号或密码错误");
 			return;
 		}
@@ -401,7 +459,7 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 		//接收解析结果
 		root = parse(recvBuff).as_object();
 		data = root.at("data").as_object();
-		if (root.at("operate").as_int64() == S_LOGIN_FAILED) {
+		if (root.at("operate").as_int64() == S_FAILED) {
 			MessageBox("账号或密码错误");
 			return;
 		}
@@ -447,7 +505,7 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 		object recv;
 		recv = parse(recvBuff).as_object();
 		object sData = recv.at("data").as_object();
-		if (recv.at("operate").as_int64() == S_LOGIN_FAILED)
+		if (recv.at("operate").as_int64() == S_FAILED)
 		{
 			MessageBox("账号或密码错误");
 			return;
@@ -477,7 +535,7 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 
 		recv = parse(recvBuff).as_object();
 		sData = recv.at("data").as_object();
-		if (recv.at("operate").as_int64() == S_LOGIN_FAILED) {
+		if (recv.at("operate").as_int64() == S_FAILED) {
 			MessageBox("账号或密码错误");
 			return;
 		}
@@ -593,5 +651,162 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 	}
 	else {
 		MessageBox("请输入账号和密码");
+	}
+}
+
+void CISEMCourseDesignClientDlg::OnBnClickedButtonAdminLogin()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (!(ID.IsEmpty() || password.IsEmpty())) {
+
+		char recvBuff[2048 + 1];
+		int ret = 0;
+		CString iterate, newIterate;
+
+		object root, data;
+		CString json;
+
+		/*
+		* 构造第一次发送的json
+		* 包括进行的操作标识符，ID
+		*/
+		root["operate"] = C_ADMIN_LOGIN;
+		data["ID"] = ID.GetString();
+		root["data"] = data;
+
+		json.Append(serialize(root).c_str());
+		cSocket->Send(json, json.GetLength());
+
+		//使用后清空，预备下次使用
+		root.clear();
+		data.clear();
+		json.Empty();
+		
+		ret = cSocket->Receive(recvBuff, 2048);
+		if (ret <= 0) {
+			MessageBox("连接出错");
+		}
+		recvBuff[ret] = 0;
+
+		//对接受的内容进行处理
+		root = parse(recvBuff).as_object();
+		data = root.at("data").as_object();
+		if (root.at("operate").as_int64() == S_FAILED) {
+			MessageBox("账号或密码错误");
+			return;
+		}
+		else if (root.at("operate").as_int64() == S_NEXTSTEP) {
+			root.clear();
+
+			iterate = PasswdToMD5(
+				password.GetString(),
+				data.at("random").as_string().c_str(),
+				data.at("challenge").as_int64()
+			).c_str();
+
+			root["iterate"] = iterate.GetString();
+		}
+		else if (root.at("operate").as_int64() == S_NEW_RANDOM) {
+			root.clear();
+
+			iterate = PasswdToMD5(
+				password.GetString(),
+				data.at("random").as_string().c_str(),
+				data.at("challenge").as_int64()
+			).c_str();
+
+			newIterate = PasswdToMD5(
+				password.GetString(),
+				data.at("newRandom").as_string().c_str(),
+				data.at("newChallenge").as_int64() + 1
+			).c_str();
+
+			root["iterate"] = iterate.GetString();
+			root["newIterate"] = newIterate.GetString();
+		}
+
+		json.Append(serialize(root).c_str());
+		cSocket->Send(json, json.GetLength());
+
+		//使用后清空，预备下次使用
+		root.clear();
+		data.clear();
+		json.Empty();
+		
+		ret = cSocket->Receive(recvBuff, 2048);
+		if (ret <= 0) {
+			MessageBox("连接出错");
+		}
+		recvBuff[ret] = 0;
+
+		//接收解析结果
+		root = parse(recvBuff).as_object();
+		data = root.at("data").as_object();
+		if (root.at("operate").as_int64() == S_FAILED) {
+			MessageBox("账号或密码错误");
+			return;
+		}
+		else {
+			//TODO 登陆成功后的处理
+			std::string userName(data.at("userName").as_string().c_str());
+			MessageBox(userName.c_str());
+
+			/*ISEMCourseDesignClientUserDlg* dlg = new ISEMCourseDesignClientUserDlg;
+			dlg->SetSocket(cSocket);
+			dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, this);
+			dlg->ShowWindow(SW_SHOW);
+			this->ShowWindow(SW_HIDE);*/
+		}
+		
+	}
+	else {
+		MessageBox("请输入账号和密码");
+	}
+	
+}
+
+
+void CISEMCourseDesignClientDlg::OnBnClickedButtonRequestReset()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (!ID.IsEmpty()) {
+		char recvBuff[2048 + 1];
+		int ret = 0;
+
+		object root, data;
+		CString json;
+
+		root["operate"] = C_RESET_PASSWORD;
+		data["ID"] = ID.GetString();
+		root["data"] = data;
+
+		json.Append(serialize(root).c_str());
+		cSocket->Send(json, json.GetLength());
+
+		//使用后清空，预备下次使用
+		root.clear();
+		data.clear();
+		json.Empty();
+
+		ret = cSocket->Receive(recvBuff, 2048);
+		if (ret <= 0) {
+			MessageBox("连接出错");
+		}
+		recvBuff[ret] = 0;
+
+		//对接受的内容进行处理
+		root = parse(recvBuff).as_object();
+		data = root.at("data").as_object();
+		if (root.at("operate").as_int64() == S_FAILED) {
+			MessageBox("申请失败，请重试");
+		}
+		else if (root.at("operate").as_int64() == S_ACCESS) {
+			MessageBox("请等待管理员处理");
+		}
+	}
+	else {
+		MessageBox("请输入账号");
 	}
 }

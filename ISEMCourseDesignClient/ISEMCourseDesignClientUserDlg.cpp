@@ -14,6 +14,7 @@ IMPLEMENT_DYNAMIC(ISEMCourseDesignClientUserDlg, CDialogEx)
 
 ISEMCourseDesignClientUserDlg::ISEMCourseDesignClientUserDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, pParent)
+	, cSocket(NULL)
 {
 
 }
@@ -31,6 +32,7 @@ void ISEMCourseDesignClientUserDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(ISEMCourseDesignClientUserDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_CHANGE_PASSWORD, &ISEMCourseDesignClientUserDlg::OnBnClickedButtonChangePassword)
 	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_BUTTON_BACK, &ISEMCourseDesignClientUserDlg::OnBnClickedButtonBack)
 END_MESSAGE_MAP()
 
 
@@ -40,7 +42,13 @@ END_MESSAGE_MAP()
 void ISEMCourseDesignClientUserDlg::OnBnClickedButtonChangePassword()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	
+	GetDlgItem(IDC_BUTTON_CHANGE_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_UPDATE)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_BUTTON_BACK)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_EDIT_NEW_PASSWORD)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_EDIT_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_STATIC_NEW_PASSWORD)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_STATIC_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_SHOW);
 }
 
 
@@ -57,4 +65,41 @@ void ISEMCourseDesignClientUserDlg::OnClose()
 void ISEMCourseDesignClientUserDlg::SetSocket(ClientSocket* pSocket)
 {
 	cSocket = pSocket;
+}
+
+void ISEMCourseDesignClientUserDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	//CDialogEx::OnOK();
+}
+
+
+BOOL ISEMCourseDesignClientUserDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	GetDlgItem(IDC_BUTTON_UPDATE)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_BACK)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_EDIT_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_EDIT_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 FALSE
+}
+
+
+void ISEMCourseDesignClientUserDlg::OnBnClickedButtonBack()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	GetDlgItem(IDC_BUTTON_UPDATE)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_BACK)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_EDIT_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_EDIT_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_CHANGE_PASSWORD)->ShowWindow(SW_SHOW);
 }
