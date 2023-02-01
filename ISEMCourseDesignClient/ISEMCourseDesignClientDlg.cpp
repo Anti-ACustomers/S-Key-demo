@@ -7,6 +7,8 @@
 #include "ISEMCourseDesignClient.h"
 #include "ISEMCourseDesignClientDlg.h"
 #include "ISEMCourseDesignClientUserDlg.h"
+#include "ISEMCourseDesignClientSecurityDlg.h"
+#include "ISEMCourseDesignClientLogDlg.h"
 #include "afxdialogex.h"
 #include <openssl/md5.h>
 #include <sstream>
@@ -144,6 +146,7 @@ BEGIN_MESSAGE_MAP(CISEMCourseDesignClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_REGISTER, &CISEMCourseDesignClientDlg::OnBnClickedButtonRegister)
 	ON_BN_CLICKED(IDC_BUTTON_ADMIN_LOGIN, &CISEMCourseDesignClientDlg::OnBnClickedButtonAdminLogin)
 	ON_BN_CLICKED(IDC_BUTTON_REQUEST_RESET, &CISEMCourseDesignClientDlg::OnBnClickedButtonRequestReset)
+	ON_BN_CLICKED(IDC_BUTTON_REQUEST_UNFREEZE, &CISEMCourseDesignClientDlg::OnBnClickedButtonRequestUnfreeze)
 END_MESSAGE_MAP()
 
 
@@ -412,6 +415,14 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 			MessageBox("账号或密码错误");
 			return;
 		}
+		else if (root.at("operate").as_int64() == S_BLOCK) {
+			MessageBox("尝试过于频繁，请稍后重试");
+			return;
+		}
+		else if (root.at("operate").as_int64() == S_FROZEN) {
+			MessageBox("账号已被冻结，请联系管理员申请解冻");
+			return;
+		}
 		else if (root.at("operate").as_int64() == S_NEXTSTEP) {
 			root.clear();
 
@@ -641,10 +652,10 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 			recvBuff[ret] = 0;
 			
 			root = parse(recvBuff).as_object();
-			if (root.at("operate").as_int64() == S_REGISTER_SUCCESS) {
+			if (root.at("operate").as_int64() == S_ACCESS) {
 				MessageBox("注册成功");
 			}
-			else if (root.at("operate").as_int64() == S_REGISTER_FAIL) {
+			else if (root.at("operate").as_int64() == S_FAILED) {
 				MessageBox("注册失败，请重试");
 			}
 		}
@@ -748,15 +759,26 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonAdminLogin()
 			return;
 		}
 		else {
-			//TODO 登陆成功后的处理
+			//登陆成功后的处理
 			std::string userName(data.at("userName").as_string().c_str());
-			MessageBox(userName.c_str());
+			int adminType = data.at("adminType").as_int64();
+			//MessageBox(userName.c_str());
 
-			/*ISEMCourseDesignClientUserDlg* dlg = new ISEMCourseDesignClientUserDlg;
-			dlg->SetSocket(cSocket);
-			dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, this);
-			dlg->ShowWindow(SW_SHOW);
-			this->ShowWindow(SW_HIDE);*/
+			if (adminType == 1) {
+				ISEMCourseDesignClientSecurityDlg* dlg = new ISEMCourseDesignClientSecurityDlg;
+				dlg->SetSocket(cSocket);
+				dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTSECURITY_DIALOG, this);
+				dlg->ShowWindow(SW_SHOW);
+				this->ShowWindow(SW_HIDE);
+			}
+			else if (adminType == 2) {
+				ISEMCourseDesignClientLogDlg* dlg = new ISEMCourseDesignClientLogDlg;
+				dlg->SetSocket(cSocket);
+				dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTLOG_DIALOG, this);
+				dlg->ShowWindow(SW_SHOW);
+				this->ShowWindow(SW_HIDE);
+			}
+			
 		}
 		
 	}
@@ -799,8 +821,56 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRequestReset()
 		//对接受的内容进行处理
 		root = parse(recvBuff).as_object();
 		data = root.at("data").as_object();
-		if (root.at("operate").as_int64() == S_FAILED) {
+		if (root.at("operate").as_int64() == S_REPEAT) {
 			MessageBox("申请失败，请重试");
+		}
+		else if (root.at("operate").as_int64() == S_ACCESS) {
+			MessageBox("请等待管理员处理");
+		}
+	}
+	else {
+		MessageBox("请输入账号");
+	}
+}
+
+
+void CISEMCourseDesignClientDlg::OnBnClickedButtonRequestUnfreeze()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (!ID.IsEmpty()) {
+		char recvBuff[2048 + 1];
+		int ret = 0;
+
+		object root, data;
+		CString json;
+
+		root["operate"] = C_UNFREEZE;
+		data["ID"] = ID.GetString();
+		root["data"] = data;
+
+		json.Append(serialize(root).c_str());
+		cSocket->Send(json, json.GetLength());
+
+		//使用后清空，预备下次使用
+		root.clear();
+		data.clear();
+		json.Empty();
+
+		ret = cSocket->Receive(recvBuff, 2048);
+		if (ret <= 0) {
+			MessageBox("连接出错");
+		}
+		recvBuff[ret] = 0;
+
+		//对接受的内容进行处理
+		root = parse(recvBuff).as_object();
+		data = root.at("data").as_object();
+		if (root.at("operate").as_int64() == S_FAILED) {
+			MessageBox("账号未被冻结");
+		}
+		if (root.at("operate").as_int64() == S_REPEAT) {
+			MessageBox("申请已发出，请等待管理员处理");
 		}
 		else if (root.at("operate").as_int64() == S_ACCESS) {
 			MessageBox("请等待管理员处理");

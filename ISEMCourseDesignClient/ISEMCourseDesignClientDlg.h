@@ -53,4 +53,5 @@ public:
 	CButton btnResetPassword;
 	CButton btnUnfreeze;
 	afx_msg void OnBnClickedButtonRequestReset();
+	afx_msg void OnBnClickedButtonRequestUnfreeze();
 };
