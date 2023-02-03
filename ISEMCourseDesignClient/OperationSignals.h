@@ -6,6 +6,7 @@
 #define C_LOGOUT 1004
 #define C_UNFREEZE 1005
 #define C_ADMIN_LOGIN 1006
+#define C_UPDATE_PASSWORD 1007
 
 #define S_ACCESS 2001
 #define S_FAILED 2002

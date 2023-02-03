@@ -4,17 +4,15 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "ISEMCourseDesignClient.h"
 #include "ISEMCourseDesignClientDlg.h"
+#include "afxdialogex.h"
+#include <iomanip>
+#include <openssl/md5.h>
+#include <boost/json/src.hpp>
+#include "ISEMCourseDesignClient.h"
 #include "ISEMCourseDesignClientUserDlg.h"
 #include "ISEMCourseDesignClientSecurityDlg.h"
 #include "ISEMCourseDesignClientLogDlg.h"
-#include "afxdialogex.h"
-#include <openssl/md5.h>
-#include <sstream>
-#include <iomanip>
-
-#include <boost/json/src.hpp>
 
 using namespace std;
 using namespace boost::json;
@@ -22,6 +20,78 @@ using namespace boost::json;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+void UpdatePassword(CString newPassword, ClientSocket* cSocket)
+{
+	char recvBuff[2048 + 1];
+	char index[5] = { 0 };
+	int ret = 0;
+	CString iterate, newIterate;
+
+	object root, data;
+	CString json;
+
+	root["operate"] = C_UPDATE_PASSWORD;
+	root["data"] = data;
+
+	json.Append(serialize(root).c_str());
+	cSocket->Send(json, json.GetLength());
+
+	//使用后清空，预备下次使用
+	root.clear();
+	data.clear();
+	json.Empty();
+
+	ret = cSocket->Receive(recvBuff, 2048);
+	if (ret <= 0) {
+		AfxMessageBox("连接出错");
+	}
+	recvBuff[ret] = 0;
+
+	root = parse(recvBuff).as_object();
+	int resNum = root.at("number").as_int64();
+	data = root.at("data").as_object();
+	root.clear();
+
+	for (int i = 0; i < resNum; i++) {
+		sprintf_s(index, "%d", i);
+		object jsonData = data.at(index).as_object();
+		root[index] = PasswdToMD5(
+			newPassword.GetString(),
+			jsonData["random"].as_string().c_str(),
+			jsonData["challenge"].as_int64() + 1
+		);
+	}
+
+	object newChallAndRand = data.at("new").as_object();
+	root["new"] = PasswdToMD5(
+		newPassword.GetString(),
+		newChallAndRand.at("random").as_string().c_str(),
+		newChallAndRand.at("challenge").as_int64() + 1
+	);
+
+	json.Append(serialize(root).c_str());
+	cSocket->Send(json, json.GetLength());
+
+	//使用后清空，预备下次使用
+	root.clear();
+	data.clear();
+	json.Empty();
+
+	ret = cSocket->Receive(recvBuff, 2048);
+	if (ret <= 0) {
+		AfxMessageBox("连接出错");
+	}
+	recvBuff[ret] = 0;
+
+	root = parse(recvBuff).as_object();
+	if(root.at("operate").as_int64() == S_ACCESS) {
+		AfxMessageBox("密码修改成功");
+	}
+	else if (root.at("operate").as_int64() == S_FAILED) {
+		AfxMessageBox("密码与过去5次内的密码重复");
+	}
+}
 
 std::string PasswdToMD5(std::string password, std::string rand, int challenge)
 {

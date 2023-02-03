@@ -33,7 +33,6 @@
 #define IDC_STATIC_CONFIRM_NEW_PASSWORD 1023
 #define IDC_BUTTON_REQUEST_RESET        1024
 #define IDC_BUTTON_REQUEST_UNFREEZE     1025
-#define IDC_SCROLLBAR1                  1028
 
 // Next default values for new objects
 // 

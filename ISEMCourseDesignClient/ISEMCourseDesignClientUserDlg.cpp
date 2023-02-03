@@ -2,11 +2,13 @@
 //
 
 #include "pch.h"
-#include "ISEMCourseDesignClient.h"
-#include "afxdialogex.h"
 #include "ISEMCourseDesignClientUserDlg.h"
+#include "afxdialogex.h"
 #include "ISEMCourseDesignClientDlg.h"
+#include "ISEMCourseDesignClient.h"
 
+
+//using namespace boost::json;
 
 // ISEMCourseDesignClientUserDlg 对话框
 
@@ -15,6 +17,8 @@ IMPLEMENT_DYNAMIC(ISEMCourseDesignClientUserDlg, CDialogEx)
 ISEMCourseDesignClientUserDlg::ISEMCourseDesignClientUserDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, pParent)
 	, cSocket(NULL)
+	, newPassword(_T(""))
+	, confPassword(_T(""))
 {
 
 }
@@ -26,6 +30,8 @@ ISEMCourseDesignClientUserDlg::~ISEMCourseDesignClientUserDlg()
 void ISEMCourseDesignClientUserDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_NEW_PASSWORD, newPassword);
+	DDX_Text(pDX, IDC_EDIT_CONFIRM_NEW_PASSWORD, confPassword);
 }
 
 
@@ -33,6 +39,7 @@ BEGIN_MESSAGE_MAP(ISEMCourseDesignClientUserDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_CHANGE_PASSWORD, &ISEMCourseDesignClientUserDlg::OnBnClickedButtonChangePassword)
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BUTTON_BACK, &ISEMCourseDesignClientUserDlg::OnBnClickedButtonBack)
+	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &ISEMCourseDesignClientUserDlg::OnBnClickedButtonUpdate)
 END_MESSAGE_MAP()
 
 
@@ -102,4 +109,14 @@ void ISEMCourseDesignClientUserDlg::OnBnClickedButtonBack()
 	GetDlgItem(IDC_STATIC_NEW_PASSWORD)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_STATIC_CONFIRM_NEW_PASSWORD)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_BUTTON_CHANGE_PASSWORD)->ShowWindow(SW_SHOW);
+}
+
+
+void ISEMCourseDesignClientUserDlg::OnBnClickedButtonUpdate()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (!(newPassword.IsEmpty() || confPassword.IsEmpty()) && newPassword == confPassword) {
+		UpdatePassword(newPassword, cSocket);
+	}
 }

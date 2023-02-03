@@ -4,7 +4,11 @@
 
 #pragma once
 #include "ClientSocket.h"
+#include <sstream>
 
+std::string PasswdToMD5(std::string password, std::string rand, int challenge);
+
+void UpdatePassword(CString newPassword, ClientSocket* cSocket);
 
 // CISEMCourseDesignClientDlg 对话框
 class CISEMCourseDesignClientDlg : public CDialogEx

@@ -31,4 +31,7 @@ private:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedButtonBack();
+	afx_msg void OnBnClickedButtonUpdate();
+	CString newPassword;
+	CString confPassword;
 };

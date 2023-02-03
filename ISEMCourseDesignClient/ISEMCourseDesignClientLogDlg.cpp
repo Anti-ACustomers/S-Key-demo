@@ -2,9 +2,9 @@
 //
 
 #include "pch.h"
-#include "ISEMCourseDesignClient.h"
-#include "afxdialogex.h"
 #include "ISEMCourseDesignClientLogDlg.h"
+#include "afxdialogex.h"
+#include "ISEMCourseDesignClient.h"
 #include "ISEMCourseDesignClientDlg.h"
 
 
