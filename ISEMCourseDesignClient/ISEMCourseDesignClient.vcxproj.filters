@@ -48,6 +48,9 @@
     <ClInclude Include="ISEMCourseDesignClientLogDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ISEMCourseDesignClientUpdateDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ISEMCourseDesignClient.cpp">
@@ -69,6 +72,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ISEMCourseDesignClientLogDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ISEMCourseDesignClientUpdateDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

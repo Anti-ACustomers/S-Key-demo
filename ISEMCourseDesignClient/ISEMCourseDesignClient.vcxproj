@@ -192,6 +192,7 @@
     <ClInclude Include="ISEMCourseDesignClientDlg.h" />
     <ClInclude Include="ISEMCourseDesignClientLogDlg.h" />
     <ClInclude Include="ISEMCourseDesignClientSecurityDlg.h" />
+    <ClInclude Include="ISEMCourseDesignClientUpdateDlg.h" />
     <ClInclude Include="ISEMCourseDesignClientUserDlg.h" />
     <ClInclude Include="OperationSignals.h" />
     <ClInclude Include="pch.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="ISEMCourseDesignClientDlg.cpp" />
     <ClCompile Include="ISEMCourseDesignClientLogDlg.cpp" />
     <ClCompile Include="ISEMCourseDesignClientSecurityDlg.cpp" />
+    <ClCompile Include="ISEMCourseDesignClientUpdateDlg.cpp" />
     <ClCompile Include="ISEMCourseDesignClientUserDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

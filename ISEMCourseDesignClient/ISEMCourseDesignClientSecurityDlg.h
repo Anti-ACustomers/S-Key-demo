@@ -28,4 +28,13 @@ public:
 	void SetSocket(ClientSocket* pSocket);
 private:
 	ClientSocket* cSocket;
+	int tableType;
+public:
+	CListCtrl showTable;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
+	CTabCtrl selectType;
+	afx_msg void OnBnClickedButtonPass();
+	afx_msg void OnBnClickedButtonReject();
+	void SwitchTable(int requestType);
 };

@@ -117,6 +117,12 @@ void ISEMCourseDesignClientUserDlg::OnBnClickedButtonUpdate()
 	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
 	if (!(newPassword.IsEmpty() || confPassword.IsEmpty()) && newPassword == confPassword) {
-		UpdatePassword(newPassword, cSocket);
+		int ret = UpdatePassword(newPassword, cSocket);
+		if (ret == S_ACCESS) {
+			AfxMessageBox("密码修改成功");
+		}
+		else if (ret == S_FAILED) {
+			AfxMessageBox("密码与过去5次内的密码重复");
+		}
 	}
 }

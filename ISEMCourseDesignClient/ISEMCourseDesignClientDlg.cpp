@@ -10,6 +10,7 @@
 #include <openssl/md5.h>
 #include <boost/json/src.hpp>
 #include "ISEMCourseDesignClient.h"
+#include "ISEMCourseDesignClientUpdateDlg.h"
 #include "ISEMCourseDesignClientUserDlg.h"
 #include "ISEMCourseDesignClientSecurityDlg.h"
 #include "ISEMCourseDesignClientLogDlg.h"
@@ -21,7 +22,92 @@ using namespace boost::json;
 #define new DEBUG_NEW
 #endif
 
-void UpdatePassword(CString newPassword, ClientSocket* cSocket)
+CString GetJson(CString* p, int number, bool operate, int type)
+{
+	object root, data;
+	CString json;
+	char index[5] = { 0 };
+
+	if (operate) {
+		root["operate"] = C_REQUEST_PASS;
+	}
+	else {
+		root["operate"] = C_REQUEST_REJECT;
+	}
+
+	data["type"] = type;
+	data["number"] = number;
+	for (int i = 0; i < number; i++) {
+		sprintf_s(index, "%d", i);
+		data[index] = p[i].GetString();
+	}
+
+	root["data"] = data;
+
+	json.Append(serialize(root).c_str());
+
+	return json;
+}
+
+ResultRows GetRequest(ClientSocket* cSocket, int requestType)
+{
+	char recvBuff[2048 + 1];
+	char index[5] = { 0 };
+	int ret = 0;
+	CString iterate, newIterate;
+	ResultRows res = { 0, NULL };
+
+	object root, data;
+	CString json;
+
+	/*
+	* 构造第一次发送的json
+	* 包括进行的操作标识符，ID
+	*/
+	root["operate"] = C_GET_REQUEST;
+	if (requestType == CLIENT_SECURITY_REQUEST_RESET_PASSWORD) {
+		data["requestType"] = 1;
+	}
+	else if (requestType == CLIENT_SECURITY_REQUEST_UNFREEZE) {
+		data["requestType"] = 2;
+	}
+	else {
+		return res;
+	}
+	root["data"] = data;
+
+	json.Append(serialize(root).c_str());
+	cSocket->Send(json, json.GetLength());
+
+	//使用后清空，预备下次使用
+	root.clear();
+	data.clear();
+	json.Empty();
+
+	ret = cSocket->Receive(recvBuff, 2048);
+	if (ret <= 0) {
+		AfxMessageBox("连接出错");
+	}
+	recvBuff[ret] = 0;
+
+	root = parse(recvBuff).as_object();
+	int resNum = root.at("number").as_int64();
+	data = root.at("data").as_object();
+
+	res.number = resNum;
+	res.rows = new ResultRow[resNum];
+	
+	for (int i = 0; i < resNum; i++) {
+		sprintf_s(index, "%d", i);
+		object jsonData = data.at(index).as_object();
+		res.rows[i].ID = jsonData.at("id").as_string().c_str();
+		res.rows[i].name = jsonData.at("name").as_string().c_str();
+	}
+
+	return res;
+}
+
+int UpdatePassword(CString newPassword, ClientSocket* cSocket)
 {
 	char recvBuff[2048 + 1];
 	char index[5] = { 0 };
@@ -85,12 +171,8 @@ void UpdatePassword(CString newPassword, ClientSocket* cSocket)
 	recvBuff[ret] = 0;
 
 	root = parse(recvBuff).as_object();
-	if(root.at("operate").as_int64() == S_ACCESS) {
-		AfxMessageBox("密码修改成功");
-	}
-	else if (root.at("operate").as_int64() == S_FAILED) {
-		AfxMessageBox("密码与过去5次内的密码重复");
-	}
+
+	return root.at("operate").as_int64();
 }
 
 std::string PasswdToMD5(std::string password, std::string rand, int challenge)
@@ -544,14 +626,18 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonUserLogin()
 			MessageBox("账号或密码错误");
 			return;
 		}
-		else {
-			//TODO 登陆成功后的处理
-			std::string userName(data.at("userName").as_string().c_str());
-			//MessageBox(userName.c_str());
-
+		else if (root.at("operate").as_int64() == S_ACCESS) {
+			//登陆成功后的处理
 			ISEMCourseDesignClientUserDlg *dlg = new ISEMCourseDesignClientUserDlg;
 			dlg->SetSocket(cSocket);
 			dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTUSER_DIALOG, this);
+			dlg->ShowWindow(SW_SHOW);
+			this->ShowWindow(SW_HIDE);
+		}
+		else if (root.at("operate").as_int64() == S_UPDATE_PASSWORD) {
+			ISEMCourseDesignClientUpdateDlg* dlg = new ISEMCourseDesignClientUpdateDlg;
+			dlg->SetSocket(cSocket);
+			dlg->Create(IDD_ISEMCOURSEDESIGNCLIENTUPDATE_DIALOG, this);
 			dlg->ShowWindow(SW_SHOW);
 			this->ShowWindow(SW_HIDE);
 		}

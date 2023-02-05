@@ -6,9 +6,26 @@
 #include "ClientSocket.h"
 #include <sstream>
 
+#define CLIENT_SECURITY_REQUEST_RESET_PASSWORD 3001
+#define CLIENT_SECURITY_REQUEST_UNFREEZE 3002
+
+typedef struct {
+	CString ID;
+	CString name;
+}ResultRow;
+
+typedef struct {
+	int number;
+	ResultRow* rows;
+}ResultRows;
+
+CString GetJson(CString* p, int number, bool operate, int type);
+
+ResultRows GetRequest(ClientSocket* cSocket, int requestType);
+
 std::string PasswdToMD5(std::string password, std::string rand, int challenge);
 
-void UpdatePassword(CString newPassword, ClientSocket* cSocket);
+int UpdatePassword(CString newPassword, ClientSocket* cSocket);
 
 // CISEMCourseDesignClientDlg 对话框
 class CISEMCourseDesignClientDlg : public CDialogEx

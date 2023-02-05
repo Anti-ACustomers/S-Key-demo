@@ -11,22 +11,11 @@ using namespace std;
 
 int main()
 {
-	//DataBase db;
-	//db.Connect("localhost", "root", "159753", "ISEM", 3306);
-	//db.QueryAccount("tyj");
-	//MYSQL_RES* pResult = db.GetResult();
-	//int num = mysql_num_rows(pResult);
-	//cout << num << endl;
-	//MYSQL_ROW column;
-	//while (column = mysql_fetch_row(pResult)) {
-	//	cout << column[0] << ' ' << column[7];
-	//}
-	//return 0;
-
 	int ret;
 	Server s;
 
 	HANDLE handle = CreateMutex(NULL, FALSE, "useDatabase");
+	HANDLE handleRecord = CreateMutex(NULL, FALSE, "writeRecord");
 
 	ret = s.InitDataBase("127.0.0.1", "root", "159753", "ISEM", 3306);
 	if (ret) {
