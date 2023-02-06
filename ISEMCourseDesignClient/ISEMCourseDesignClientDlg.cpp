@@ -18,9 +18,95 @@
 using namespace std;
 using namespace boost::json;
 
+#define SERVER_PORT 10086
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+UINT GetLogFile(LPVOID pParam)
+{
+	int ret = 0;
+	char buff[1024 + 1];
+
+	ClientSocket* cSocket = (ClientSocket*)pParam;
+
+	object root, data;
+	CString json;
+
+	if (pParam == NULL) {
+		return -1;
+	}
+
+	root["operate"] = C_GET_LOG;
+	root["data"] = data;
+
+	json.Append(serialize(root).c_str());
+	cSocket->Send(json, json.GetLength());
+
+	ret = cSocket->Receive(buff, 1024);
+	if (ret < 0) {
+		AfxMessageBox("连接出错");
+	}
+	buff[ret] = 0;
+
+	//使用后清空，预备下次使用
+	root.clear();
+	data.clear();
+	json.Empty();
+
+	root = parse(buff).as_object();
+	int length = root.at("length").as_int64();
+	int totalNo = root.at("totalNo").as_int64();
+	int expectTotalNo = length % 1024 ? length / 1024 + 1 : length / 1024;
+
+	root.clear();
+	if (expectTotalNo == totalNo) {
+		root["ready"] = 1;
+		json.Append(serialize(root).c_str());
+		cSocket->Send(json, json.GetLength());
+	}
+	else {
+		root["ready"] = 0;
+		json.Append(serialize(root).c_str());
+		cSocket->Send(json, json.GetLength());
+		return -1;
+	}
+
+	FILE* fp = fopen("record.log", "w");
+	if (fp == NULL)
+	{
+		AfxMessageBox("无法打开record.log");
+		return 1;
+	}
+
+	// 从服务器端接收数据到buff中   
+	memset(buff, 0, 1025);
+	int recvLength = 0;
+
+	for (int i = 0; i < totalNo; i++)
+	{
+		recvLength = cSocket->Receive(buff, 1024);
+		if (recvLength < 0)
+		{
+			AfxMessageBox("从服务器接收数据出错");
+			break;
+		}
+
+		int writeLength = fwrite(buff, sizeof(char), recvLength, fp);
+		if (writeLength < recvLength)
+		{
+			AfxMessageBox("文件写入出错");
+			break;
+		}
+		memset(buff, 0, 1025);
+	}
+
+	AfxMessageBox("获取日志文件完成");
+  
+	fclose(fp);
+	return 0;
+}
 
 CString GetJson(CString* p, int number, bool operate, int type)
 {
@@ -202,6 +288,11 @@ std::string PasswdToMD5(std::string password, std::string rand, int challenge)
 BOOL CheckPassword(CString password)
 {
 	BOOL upper = FALSE, lower = FALSE, num = FALSE;
+	
+	int length = password.GetLength();
+
+	if (length > 20 || length < 8) return FALSE;
+
 	for (int i = 0; i < password.GetLength(); i++) {
 		CHAR chr = password[i];
 		if (chr >= 'a' && chr <= 'z') {
@@ -742,8 +833,22 @@ void CISEMCourseDesignClientDlg::OnBnClickedButtonRegister()
 	UpdateData(TRUE);
 	if (!(userName.IsEmpty() || ID.IsEmpty() || password.IsEmpty() || confPasswd.IsEmpty())) {
 
+		int length = 0;
+
+		length = userName.GetLength();
+		if (length > 12 || length < 3) {
+			MessageBox("用户名长度应在3到12之间");
+			return;
+		}
+
+		length = ID.GetLength();
+		if (length > 16 || length < 6) {
+			MessageBox("用户ID长度应在6到16之间");
+			return;
+		}
+
 		if (!CheckPassword(password)) {
-			MessageBox("密码应包含英文字母大小写和数字，不能包含符号");
+			MessageBox("密码应包含英文字母大小写和数字，不能包含符号，且长度在8到20之间");
 			return;
 		}
 

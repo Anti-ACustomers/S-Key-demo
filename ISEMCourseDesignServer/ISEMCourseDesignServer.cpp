@@ -2,12 +2,94 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include <io.h>
 #include "Server.h"
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "libmysql.lib")
 
 using namespace std;
+
+#define INI_PATH ".\\setting.ini"
+
+char databaseAddr[16];
+char databaseUser[20];
+char databasePasswd[256];
+char databaseName[70];
+int databasePort = 3306;
+int noLoginPeriod;
+int passwordChangePeriod;
+int serverPort;
+
+void ReadINI()
+{
+	if (_access(INI_PATH, 0) == -1) {
+
+		WritePrivateProfileStringA(
+			"database",
+			"db_user",
+			"root",
+			INI_PATH
+		);
+		WritePrivateProfileStringA(
+			"database",
+			"db_password",
+			"159753",
+			INI_PATH
+		);
+		WritePrivateProfileStringA(
+			"database",
+			"db_port",
+			"3306",
+			INI_PATH
+		);
+		WritePrivateProfileStringA(
+			"database",
+			"db_database",
+			"isem",
+			INI_PATH
+		);
+		WritePrivateProfileStringA(
+			"database",
+			"db_server",
+			"127.0.0.1",
+			INI_PATH
+		);
+		WritePrivateProfileStringA(
+			"server",
+			"s_port",
+			"10086",
+			INI_PATH
+		); WritePrivateProfileStringA(
+			"function",
+			"no_login_period",
+			"30",
+			INI_PATH
+		);
+		WritePrivateProfileStringA(
+			"function",
+			"password_change_period",
+			"15",
+			INI_PATH
+		);
+		
+	}
+
+	GetPrivateProfileStringA("database", "db_user", "", databaseUser, 20, INI_PATH);
+	GetPrivateProfileStringA("database", "db_password", "", databasePasswd, 256, INI_PATH);
+	databasePort = GetPrivateProfileIntA("database", "db_port", 3306, INI_PATH);
+	GetPrivateProfileStringA("database", "db_database", "", databaseName, 70, INI_PATH);
+	GetPrivateProfileStringA("database", "db_server", "127.0.0.1", databaseAddr, 16, INI_PATH);
+	serverPort = GetPrivateProfileIntA("server", "s_port", 10086, INI_PATH);
+	noLoginPeriod = GetPrivateProfileIntA("function", "no_login_period", 30, INI_PATH);
+	passwordChangePeriod = GetPrivateProfileIntA("function", "password_change_period", 15, INI_PATH);
+
+	if (strlen(databaseUser) == 0 || strlen(databasePasswd) == 0 || strlen(databaseName) == 0) {
+		printf("The database user name, password, or database name is not set\n");
+		exit(-1);
+	}
+}
 
 int main()
 {
@@ -17,13 +99,21 @@ int main()
 	HANDLE handle = CreateMutex(NULL, FALSE, "useDatabase");
 	HANDLE handleRecord = CreateMutex(NULL, FALSE, "writeRecord");
 
-	ret = s.InitDataBase("127.0.0.1", "root", "159753", "ISEM", 3306);
+	ReadINI();
+
+	ret = s.InitDataBase(
+		databaseAddr, 
+		databaseUser, 
+		databasePasswd, 
+		databaseName, 
+		databasePort
+	);
 	if (ret) {
 		printf("数据库连接失败");
 		return -1;
 	}
-
-	ret = s.StartListen();
+    
+	ret = s.StartListen(serverPort);
 	if (ret) {
 		printf("启动监听服务失败");
 		return -1;

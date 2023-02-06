@@ -15,7 +15,7 @@ public:
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ISEMCOURESEDESIGNCLIENTLOG_DIALOG };
+	enum { IDD = IDD_ISEMCOURSEDESIGNCLIENTLOG_DIALOG };
 #endif
 
 protected:
@@ -28,4 +28,6 @@ public:
 	void SetSocket(ClientSocket* pSocket);
 private:
 	ClientSocket* cSocket;
+public:
+	afx_msg void OnBnClickedButtonGetLogFile();
 };

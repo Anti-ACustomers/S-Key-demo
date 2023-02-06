@@ -117,6 +117,17 @@ void ISEMCourseDesignClientUserDlg::OnBnClickedButtonUpdate()
 	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
 	if (!(newPassword.IsEmpty() || confPassword.IsEmpty()) && newPassword == confPassword) {
+		
+		if (!CheckPassword(newPassword)) {
+			MessageBox("密码应包含英文字母大小写和数字，不能包含符号，且长度在8到20之间");
+			return;
+		}
+
+		if (newPassword != confPassword) {
+			MessageBox("前后密码不一致");
+			return;
+		}
+
 		int ret = UpdatePassword(newPassword, cSocket);
 		if (ret == S_ACCESS) {
 			AfxMessageBox("密码修改成功");
