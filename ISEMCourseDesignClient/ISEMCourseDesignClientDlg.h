@@ -19,6 +19,8 @@ typedef struct {
 	ResultRow* rows;
 }ResultRows;
 
+UINT GetLogFile(LPVOID pParam);
+
 CString GetJson(CString* p, int number, bool operate, int type);
 
 ResultRows GetRequest(ClientSocket* cSocket, int requestType);
@@ -26,6 +28,8 @@ ResultRows GetRequest(ClientSocket* cSocket, int requestType);
 std::string PasswdToMD5(std::string password, std::string rand, int challenge);
 
 int UpdatePassword(CString newPassword, ClientSocket* cSocket);
+
+BOOL CheckPassword(CString password);
 
 // CISEMCourseDesignClientDlg 对话框
 class CISEMCourseDesignClientDlg : public CDialogEx

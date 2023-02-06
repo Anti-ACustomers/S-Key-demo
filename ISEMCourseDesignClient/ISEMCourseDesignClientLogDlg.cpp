@@ -31,6 +31,7 @@ void ISEMCourseDesignClientLogDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ISEMCourseDesignClientLogDlg, CDialogEx)
 	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_BUTTON_GET_LOG_FILE, &ISEMCourseDesignClientLogDlg::OnBnClickedButtonGetLogFile)
 END_MESSAGE_MAP()
 
 
@@ -57,4 +58,10 @@ void ISEMCourseDesignClientLogDlg::OnClose()
 void ISEMCourseDesignClientLogDlg::SetSocket(ClientSocket* pSocket)
 {
 	cSocket = pSocket;
+}
+
+void ISEMCourseDesignClientLogDlg::OnBnClickedButtonGetLogFile()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	AfxBeginThread(GetLogFile, cSocket);
 }

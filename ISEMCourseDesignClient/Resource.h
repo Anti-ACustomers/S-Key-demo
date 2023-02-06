@@ -43,6 +43,7 @@
 #define IDC_STATIC_MUST_NEW_PASSWORD    1044
 #define IDC_STATIC_MUST_CONFIRM_NEW_PASSWORD 1045
 #define IDC_BUTTON_MUST_UPDATE          1046
+#define IDC_BUTTON_GET_LOG_FILE         1047
 
 // Next default values for new objects
 // 
@@ -50,7 +51,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1047
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif
