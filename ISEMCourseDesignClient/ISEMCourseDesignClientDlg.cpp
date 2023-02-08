@@ -24,19 +24,13 @@ using namespace boost::json;
 #define new DEBUG_NEW
 #endif
 
-UINT GetLogFile(LPVOID pParam)
+int GetLogFile(ClientSocket* cSocket)
 {
 	int ret = 0;
 	char buff[1024 + 1];
 
-	ClientSocket* cSocket = (ClientSocket*)pParam;
-
 	object root, data;
 	CString json;
-
-	if (pParam == NULL) {
-		return -1;
-	}
 
 	root["operate"] = C_GET_LOG;
 	root["data"] = data;

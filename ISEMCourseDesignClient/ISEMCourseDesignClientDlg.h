@@ -19,7 +19,7 @@ typedef struct {
 	ResultRow* rows;
 }ResultRows;
 
-UINT GetLogFile(LPVOID pParam);
+int GetLogFile(ClientSocket* cSokcet);
 
 CString GetJson(CString* p, int number, bool operate, int type);
 
