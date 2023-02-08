@@ -63,5 +63,5 @@ void ISEMCourseDesignClientLogDlg::SetSocket(ClientSocket* pSocket)
 void ISEMCourseDesignClientLogDlg::OnBnClickedButtonGetLogFile()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	AfxBeginThread(GetLogFile, cSocket);
+	GetLogFile(cSocket);
 }
